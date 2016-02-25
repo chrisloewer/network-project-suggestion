@@ -1,66 +1,17 @@
 
-// ------------------------------------- CLASS DEFINITIONS -------------------------------- //
+// ------------------------------------- SUBJECT - OBSERVER SETUP ------------------------------ //
 
-// CONTEXT ---------------------------------------------------------------
-// Context is the base class of this app
-
-function Context() {
-  switchList = [];
+// SUBJECT BASE CLASS
+// Keeps track of subscribed observers
+function Subject() {
   this._observerList = [];
 }
 
-// Load switchesList from Storage
-Context.prototype.loadSwitches = function() {
-  console.log('Context.loadSwitches()');
-
-  // TODO get switchesList from Storage
-  // TODO update AppComponents (displayed items)
-};
-
-// Called when switch is changed - update corresponding switch in Context
-Context.prototype.updateContext = function(switchObj) {
-  console.log('Context.updateContext()');
-
-  // TODO update switchList
-  // TODO storeSwitches in Storage
-  // TODO update AppComponents (displayed items)
-};
-
-Context.prototype.clearContext = function() {
-  console.log('Context.clearContext()');
-
-  // TODO clear Storage
-  // TODO update AppComponents (displayed items)
-};
-
-// Retrieves data from Storage
-Context.prototype.getInfo = function() {
-  console.log('Context.getInfo()');
-
-  // TODO get json from Storage
-  // TODO update AppComponents (displayed items)
-};
-
-// Called after Context changes - update AppComponents with data in Context
-Context.prototype.updateInfo = function(jsonObj) {
-    console.log('Context.updateInfo()');
-
-  // TODO update AppComponents (displayed items)
-};
-
-
-Context.prototype.storeSwitches = function() {
-  console.log('Context.storeSwitches()');
-
-  // TODO setSwitches in Storage
-};
-
-// Add observer functionality
-Context.prototype.attachObserver = function(observer) {
+Subject.prototype.attachObserver = function(observer) {
   this._observerList.push(observer);
 };
 
-Context.prototype.detachObserver = function(observer) {
+Subject.prototype.detachObserver = function(observer) {
   var len = this._observerList.length;
   for (var i= 0; i<len; i++) {
     if (this._observerList[i] === observer) {
@@ -72,7 +23,7 @@ Context.prototype.detachObserver = function(observer) {
   return false;
 };
 
-Context.prototype.updateObservers = function(args) {
+Subject.prototype.updateObservers = function(args) {
   if(args === void 0) {
     args = {};
   }
@@ -83,80 +34,247 @@ Context.prototype.updateObservers = function(args) {
   }
 };
 
+// OBSERVER BASE CLASS
+// Each component will expand on this base
+function Observer() {}
 
-// COMPONENTS ------------------------------------------------------------
-// Components keeps track of GUI and observes Context for changes
+Observer.prototype.toString = function() {
+  return 'Basic Observer';
+};
 
-function Components() {}
-
-// sets all switches to list in Context
-Components.prototype.update = function(args) {
-  console.log('Components.update()');
+Observer.prototype.update = function(args) {
   if(args === void 0) {
     args = {};
   }
 
-  // TODO get each item in switchList in Context
-  // TODO redraw display according to new items
+  console.log('Generic Observer update called');
 };
 
-// Let context know there was a change
-Components.prototype.updateContext = function() {
-  console.log('Components.updateContext()');
 
-  // TODO update Context that there was a change to one of the components
-};
+// ------------------------------------- BASE CLASS DEFINITIONS -------------------------------- //
 
+// CONTEXT ---------------------------------------------------------------
+// Context is the base class of this app and tracks observers
+function Context() {
+
+  var subject = new Subject();
+
+  this.attachObserver = function attachObserver(observer) {
+    subject.attachObserver(observer);
+  };
+
+  this.detachObserver = function detachObserver(observer) {
+    subject.detachObserver(observer);
+  };
+
+  this.updateObservers = function update(args) {
+    if (args === void 0) {
+      args = {};
+    }
+    subject.updateObservers(args);
+  };
+}
 
 // SWITCH ----------------------------------------------------------------
 // Switch is parent of each 'smart switch' component
-
-function Switch(name, ipAddr, state) {
-  this.name = name;
-  this.ipAddr = ipAddr;
-  this.state = state;
-  this.timeStamp = new Date().getTime();
-}
-
-// Remove this particular switch
-Switch.prototype.delete = function() {
-  console.log('Switch.delete()');
-
-  // TODO delete switch
-  // TODO let Components know this list is to be deleted
-};
-
-// flip this particular switch on/off
-Switch.prototype.toggleState = function() {
-  console.log('Switch.toggleState');
-
-  // TODO toggle switch state
-  // TODO let Components know the switch changed
-};
-
-Switch.prototype.draw = function () {
-  console.log('Switch.draw()');
-
-  // TODO display switch component based on info given
-};
-
-
-// STORAGE ---------------------------------------------------------------
-// Storage deals with writing our data to localStorage and observes Context for changes
-
-function Storage() {}
-
-Storage.prototype.update = function (args) {
-  console.log('Storage.update()');
-  if(args === void 0) {
-    args = {};
+function Switch(Obj) {
+  if(Obj === void 0) {
+    Obj = {};
   }
 
-  // TODO set localStorage appropriately to reflect args
+  Obj.name !== void 0 ? this.name = Obj.name : this.name = 'genericSwitch';
+  Obj.ipAddr !== void 0 ? this.ipAddr = Obj.ipAddr : this.ipAddr = '127.0.0.1';
+  Obj.state !== void 0 ? this.state = Obj.state : this.state = false;
+}
+
+// returns DOM element for a switch
+Switch.prototype.createElement = function () {
+
+  var container = document.createElement('div');
+  addClass(container,'switch');
+
+  var leftDiv = document.createElement('div');
+  addClass(leftDiv, 'info');
+  var nameNode = document.createElement('div');
+  addClass(nameNode, 'info-node');
+  addClass(nameNode, 'name');
+  var ipNode = document.createElement('div');
+  addClass(ipNode, 'info-node');
+  addClass(ipNode, 'ip');
+  var delNode = document.createElement('div');
+  addClass(delNode, 'info-node');
+  addClass(delNode, 'delete');
+  nameNode.appendChild(document.createTextNode(this.name));
+  ipNode.appendChild(document.createTextNode(this.ipAddr));
+  delNode.appendChild(document.createTextNode('Delete'));
+  leftDiv.appendChild(nameNode);
+  leftDiv.appendChild(ipNode);
+  leftDiv.appendChild(delNode);
+  container.appendChild(leftDiv);
+
+  var stateStr;
+  this.state ? stateStr = 'on' : stateStr = 'off';
+  var rightDiv = document.createElement('div');
+  addClass(rightDiv, 'actions');
+  var button = document.createElement('button');
+  button.appendChild(document.createTextNode(stateStr));
+  addClass(button, stateStr);
+  rightDiv.appendChild(button);
+  container.appendChild(rightDiv);
+
+  var s = this;
+
+  // Toggle State
+  button.addEventListener('click', function() {
+    s.state = !s.state;
+    componentObserver.updateContext();
+  });
+
+  // Delete switch
+  delNode.addEventListener('click', function() {
+    console.log('delete');
+    componentObserver.removeSwitch(s);
+  });
+
+  return container;
 };
 
-Storage.prototype.updateContext = function() {
-  console.log('Storage.updateContext()');
 
-  // TODO update Context with the data stored in localStorage
+// ------------------------------------- INITIALIZE PAGE --------------------------------------- //
+
+var context = new Context();
+var storageObserver = new Observer();
+var componentObserver = new Observer();
+
+window.onload = function() {
+  context.attachObserver(storageObserver);
+  context.attachObserver(componentObserver);
+
+  storageObserver.updateContext();
+  //context.updateObservers();
 };
+
+
+// ------------------------------------- COMPONENT FUNCTIONALITY ------------------------------- //
+
+(function() {
+
+  var switchList = [];
+
+  function init() {
+    document.getElementById('add_button').addEventListener('click', addSwitch);
+  }
+
+  function addSwitch() {
+    console.log('addSwitch()');
+
+    var nameField = document.getElementById('name_input').value;
+    var ipField = document.getElementById('ip_input').value;
+
+    if(nameField == '' || ipField == ''){
+      return false;
+    }
+
+    switchList.push( new Switch(
+      {
+        'name': nameField,
+        'ipAddr': ipField,
+        'state': false
+      }));
+
+    document.getElementById('name_input').value = '';
+    document.getElementById('ip_input').value = '';
+
+    componentObserver.updateContext();
+  }
+
+  componentObserver.removeSwitch = function(s) {
+    var i = switchList.indexOf(s);
+    if(i != -1) {
+      switchList.splice(i, 1);
+      componentObserver.updateContext();
+    }
+  };
+
+  // Observer Functionality
+  componentObserver.toString = function() {
+    return 'componentObserver';
+  };
+
+  componentObserver.update = function(args) {
+    // console.log('componentObserver.update()');
+    if(args === void 0) {
+      args = {};
+    }
+
+    // Reset
+    switchList = [];
+    var containerDiv = document.getElementById('list_container');
+    removeChildNodes(containerDiv);
+
+    // Draw switches
+    if(args.switchList !== void 0 && args.switchList.length > 0) {
+      for(var i=0; i<args.switchList.length; i++) {
+        switchList.push(args.switchList[i]);
+        var domSwitch = args.switchList[i].createElement();
+        containerDiv.insertBefore(domSwitch, containerDiv.firstChild);
+      }
+    }
+
+    init();
+  };
+
+  componentObserver.updateContext = function() {
+    //console.log('componentObserver.updateContext()');
+    var args = {
+      'switchList': switchList
+    };
+
+    context.updateObservers(args);
+  };
+
+})();
+
+
+// ------------------------------------- STORAGE FUNCTIONALITY --------------------------------- //
+
+(function() {
+
+  storageObserver.toString = function() {
+    return 'storageObserver';
+  };
+
+  storageObserver.update = function(args) {
+    // console.log('storageObserver.update()');
+    if(args === void 0) {
+      args = {};
+    }
+
+    if(args.switchList !== void 0 && args.switchList.length > 0) {
+      localStorage.setItem('switchList', JSON.stringify(args.switchList));
+    }
+  };
+
+  storageObserver.updateContext = function() {
+    //console.log('storageObserver.updateContext()');
+
+    var list = [];
+    try{
+      // Convert from json string to array of Switches
+      var objList = JSON.parse(localStorage.getItem('switchList'));
+      for(var i=0; i<objList.length; i++) {
+        list.push(new Switch(objList[i]));
+      }
+    }
+    catch (e) {
+      console.log('Error parsing local storage: ' + e);
+    }
+
+    var data = {
+      'switchList': list
+    };
+    context.updateObservers(data);
+  };
+
+})();
+

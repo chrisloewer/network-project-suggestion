@@ -2,4 +2,70 @@
 body {
   margin: 0;
   padding: 0;
+  font-family: 'Chivo', sans-serif;
+  text-align: center;
+}
+
+/* line 9, ../sass/main-style.scss */
+input {
+  display: inline-block;
+  padding: 5px;
+  margin: 10px;
+}
+
+/* line 15, ../sass/main-style.scss */
+button {
+  width: 50px;
+  padding: 7px;
+  border-radius: 15px;
+  border: 1px solid black;
+  font-size: 12px;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+/* line 25, ../sass/main-style.scss */
+button.add {
+  margin: 10px;
+}
+
+/* line 29, ../sass/main-style.scss */
+.switch {
+  border: 1px solid black;
+  margin: 10px;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+}
+/* line 36, ../sass/main-style.scss */
+.switch .info {
+  flex-grow: 1;
+  text-align: left;
+  padding-left: 20px;
+}
+/* line 41, ../sass/main-style.scss */
+.switch .info .info-node {
+  display: block;
+}
+/* line 45, ../sass/main-style.scss */
+.switch .info .info-node.name {
+  font-size: 18px;
+}
+/* line 48, ../sass/main-style.scss */
+.switch .info .info-node.ip {
+  font-size: 14px;
+  font-style: italic;
+}
+/* line 52, ../sass/main-style.scss */
+.switch .info .info-node.delete {
+  font-size: 10px;
+  text-decoration: underline;
+}
+/* line 58, ../sass/main-style.scss */
+.switch .actions {
+  padding-right: 20px;
+}
+/* line 61, ../sass/main-style.scss */
+.switch .actions button.on {
+  background-color: #B0D4B2;
 }
