@@ -4,7 +4,7 @@ Internet of Things suggestion for Network Security capstone class at Letu
 
 ### Root Problem
 
-Home automation is needlessly expensive and requires proprietary equipment.
+Life never stays at home, and when we are home we spend a lot of time changing settings on our devices. Finding a way to control the power of your home remotely and the environment when you are home would help a lot.
 
 
 ### Project Proposal
