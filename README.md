@@ -7,6 +7,11 @@ Internet of Things suggestion for Network Security capstone class at Letu
 Life never stays at home, and when we are home we spend a lot of time changing settings on our devices. Finding a way to control the power of your home remotely and the environment when you are home would help a lot.
 
 
+### Solution
+
+We will develop a mobile application that will let people control the lighting in their homes no matter where they are. With just a touch of a button people will be able to switch any compatible light on and off with the assurance that it will work every time.
+
+
 ### Project Proposal
 
 Create a simple system where several individual power sources can be turned on and off remotely over the network.  This will entail building 'smart' power strips, a central server to control the state of the power strips, and an app to communicate with the central server.
