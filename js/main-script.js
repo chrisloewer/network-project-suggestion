@@ -84,6 +84,7 @@ function Switch(Obj) {
 
   Obj.name !== void 0 ? this.name = Obj.name : this.name = 'genericSwitch';
   Obj.ipAddr !== void 0 ? this.ipAddr = Obj.ipAddr : this.ipAddr = '127.0.0.1';
+  Obj.deviceNum !== void 0 ? this.deviceNum = Obj.deviceNum : this.deviceNum = '127.0.0.1';
   Obj.state !== void 0 ? this.state = Obj.state : this.state = false;
 }
 
@@ -105,7 +106,7 @@ Switch.prototype.createElement = function () {
   addClass(delNode, 'info-node');
   addClass(delNode, 'delete');
   nameNode.appendChild(document.createTextNode(this.name));
-  ipNode.appendChild(document.createTextNode(this.ipAddr));
+  ipNode.appendChild(document.createTextNode(this.ipAddr + ' --> ' + this.deviceNum));
   delNode.appendChild(document.createTextNode('Delete'));
   leftDiv.appendChild(nameNode);
   leftDiv.appendChild(ipNode);
@@ -127,6 +128,14 @@ Switch.prototype.createElement = function () {
   // Toggle State
   button.addEventListener('click', function() {
     s.state = !s.state;
+
+    if(s.state){
+      sendPacket(s.ipAddr, s.deviceNum, 'on');
+    }
+    else {
+      sendPacket(s.ipAddr, s.deviceNum, 'off');
+    }
+
     componentObserver.updateContext();
   });
 
@@ -170,8 +179,9 @@ window.onload = function() {
 
     var nameField = document.getElementById('name_input').value;
     var ipField = document.getElementById('ip_input').value;
+    var deviceField = document.getElementById('device_input').value;
 
-    if(nameField == '' || ipField == ''){
+    if(nameField == '' || ipField == '' || deviceField == ''){
       return false;
     }
 
@@ -179,6 +189,7 @@ window.onload = function() {
       {
         'name': nameField,
         'ipAddr': ipField,
+        'deviceNum': deviceField,
         'state': false
       }));
 
