@@ -84,7 +84,7 @@ function Switch(Obj) {
 
   Obj.name !== void 0 ? this.name = Obj.name : this.name = 'genericSwitch';
   Obj.ipAddr !== void 0 ? this.ipAddr = Obj.ipAddr : this.ipAddr = '127.0.0.1';
-  Obj.deviceNum !== void 0 ? this.deviceNum = Obj.deviceNum : this.deviceNum = '127.0.0.1';
+  Obj.deviceNum !== void 0 ? this.deviceNum = Obj.deviceNum : this.deviceNum = 'deviceNum';
   Obj.state !== void 0 ? this.state = Obj.state : this.state = false;
 }
 
