@@ -1,4 +1,5 @@
 
+// Send packet directly to Arduino
 function sendPacket(ipAddress, deviceId, command){
   var url = 'http://'+ ipAddress +'/arduino/'+ deviceId +'/'+ command;
 

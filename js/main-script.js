@@ -256,29 +256,53 @@ window.onload = function() {
   };
 
   storageObserver.update = function(args) {
-    // console.log('storageObserver.update()');
+
+    // Store data
     if(args === void 0) {
       args = {};
     }
 
-    if(args.switchList !== void 0 && args.switchList.length > 0) {
-      localStorage.setItem('switchList', JSON.stringify(args.switchList));
+    if(args.switchList !== void 0) {
+      //localStorage.setItem('switchList', JSON.stringify(args.switchList));
+
+      var url = 'writeFile.php?data=' + JSON.stringify(args.switchList);
+      var xmlHttp = new XMLHttpRequest();
+      xmlHttp.onreadystatechange = function() {
+        if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+          console.log(xmlHttp.responseText);
+      };
+      xmlHttp.open("GET", url, true);
+      xmlHttp.send(null);
     }
   };
 
   storageObserver.updateContext = function() {
-    //console.log('storageObserver.updateContext()');
 
+    // Retrieve data from storage
     var list = [];
     try{
-      // Convert from json string to array of Switches
-      var objList = JSON.parse(localStorage.getItem('switchList'));
-      for(var i=0; i<objList.length; i++) {
-        list.push(new Switch(objList[i]));
-      }
+
+      // Get stored data from file
+      var url = 'readFile.php';
+      var xmlHttp = new XMLHttpRequest();
+      xmlHttp.onreadystatechange = function() {
+        if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+          var data = xmlHttp.responseText;
+          console.log(data);
+
+        // Convert from json string to array of Switches
+        var objList = JSON.parse(data);
+        for(var i=0; i<objList.length; i++) {
+          list.push(new Switch(objList[i]));
+        }
+      };
+      xmlHttp.open("GET", url, false);  // Lock execution until response is received
+      xmlHttp.send(null);
+
+
     }
     catch (e) {
-      console.log('Error parsing local storage: ' + e);
+      console.log('Error parsing storage: ' + e);
     }
 
     var data = {
